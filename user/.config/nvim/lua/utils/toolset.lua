@@ -1,0 +1,271 @@
+local M = {}
+
+M.treesitter_parsers = {
+	"c",
+	"cpp",
+	"cmake",
+	"meson",
+
+	"rust",
+	"go",
+
+	"lua",
+	"luau",
+	"python",
+
+	"make",
+	"just",
+
+	"bash",
+
+	"kdl",
+	"toml",
+	"yaml",
+
+	"html",
+	"css",
+	"javascript",
+	"typescript",
+	"typst",
+	"json",
+	"qml",
+
+	"astro",
+	"tsx",
+	"svelte",
+
+	"latex",
+	"markdown",
+	"markdown_inline",
+}
+
+M.lsp = {
+	ansiblels = {},
+	astro = {},
+	basedpyright = {},
+	clangd = {},
+	cmake = {},
+	cssls = {
+		cmd = { "vscode-css-language-server", "--stdio" },
+		filetypes = { "css", "scss", "less" },
+		init_options = {
+			configurationSection = { "css", "scss", "less" },
+			embeddedLanguages = {
+				css = true,
+				javascript = true,
+			},
+		},
+		root_dir = function(_)
+			return vim.fs.root(0, { "package.json", ".git" }) or vim.fn.getcwd()
+		end,
+		settings = {
+			css = { validate = true },
+			scss = { validate = true },
+			less = { validate = true },
+		},
+	},
+	dartls = {
+		cmd = { "dart", "language-server", "--protocol=lsp" },
+		settings = {
+			dart = {
+				completeFunctionCalls = true,
+				showTodos = true,
+				updateImportsOnRename = true,
+			},
+		},
+	},
+	gopls = {
+		settings = {
+			gopls = {
+				usePlaceholders = true,
+				completeUnimported = true,
+				analyses = {
+					unusedparams = true,
+				},
+				staticcheck = true,
+			},
+		},
+	},
+	jsonls = {},
+	just_lsp = {},
+	lua_ls = {
+		settings = {
+			Lua = {
+				runtime = { version = "LuaJIT" },
+				diagnostics = { globals = { "vim" } },
+				workspace = {
+					library = vim.api.nvim_get_runtime_file("", true),
+					checkThirdParty = false,
+				},
+				telemetry = { enable = false },
+			},
+		},
+	},
+	marksman = {
+		settings = {
+			marksman = {
+				diagnostics = { wikiLinks = false },
+			},
+		},
+	},
+	mesonlsp = {
+		cmd = { "mesonlsp", "--lsp" },
+		filetypes = { "meson" },
+		root_dir = function(_)
+			return vim.fs.root(0, { "meson.build", ".git" }) or vim.fn.getcwd()
+		end,
+	},
+	nixd = {},
+	qmlls = {
+		cmd = { "qmlls" },
+		filetypes = { "qml" },
+	},
+	rune_languageserver = {
+		cmd = { "rune", "language-server" },
+		filetypes = { "rune" },
+		root_dir = function(_)
+			return vim.fs.root(0, { "Cargo.toml", ".git" }) or vim.fn.getcwd()
+		end,
+	},
+	rust_analyzer = {
+		settings = {
+			["rust-analyzer"] = {
+				cargo = {
+					targetDir = ".target-clippy",
+				},
+			},
+		},
+		trace = "verbose",
+	},
+	superhtml = {
+		filetypes = { "html" },
+		root_dir = function(_)
+			return vim.fs.root(0, { "package.json", ".git" }) or vim.fn.getcwd()
+		end,
+	},
+	svelte = {},
+	texlab = {
+		filetypes = { "tex", "markdown" },
+	},
+	tinymist = {
+		settings = {
+			exportPdf = "never",
+			semanticTokens = "disable",
+			formatterMode = "typstyle",
+			formatterProseWrap = true,
+			formatterPrintWidth = 80,
+			formatterIndentSize = 4,
+		},
+	},
+	ts_ls = {},
+	zk = {},
+}
+
+M.formatters = {
+	cmake_format = {
+		command = "cmake-format",
+		args = {
+			"--line-width",
+			"100",
+			"--tab-size",
+			"4",
+			"-i",
+			"$FILENAME",
+		},
+		stdin = false,
+	},
+	prettier = {
+		command = "prettier",
+		args = {
+			"--stdin-filepath",
+			"$FILENAME",
+			"--tab-width",
+			"4",
+			"--use-tabs",
+			"false",
+		},
+		stdin = true,
+	},
+	clang_format = {
+		command = "clang-format",
+		args = {
+			"-style",
+			"{BasedOnStyle: Google, IndentWidth: 4, AccessModifierOffset: -4, ColumnLimit: 100}",
+		},
+	},
+	nixfmt = {
+		command = "nixfmt",
+		args = { "--indent", "4" },
+	},
+	gofmt = {
+		command = "gofmt",
+		stdin = true,
+	},
+	-- qmlformat = {
+	-- 	command = "qmlformat",
+	-- 	args = { "--inplace", "$FILENAME" },
+	-- 	stdin = false,
+	-- },
+	rune_fmt = {
+		command = "rune",
+		args = { "fmt", "$FILENAME" },
+		stdin = false,
+	},
+	meson_format = {
+		command = "meson",
+		args = { "format", "-i", "$FILENAME" },
+		stdin = false,
+	},
+	stylua = {
+		command = "stylua",
+		args = { "--column-width", "100", "-" },
+		stdin = true,
+	},
+	dart_format = {
+		command = "dart",
+		args = { "format", "--indent", "4", "$FILENAME" },
+	},
+	kdlfmt = {
+		command = "kdlfmt",
+		stdin = true,
+	},
+}
+
+M.formatters_by_ft = {
+	c = { "clang_format" },
+	cpp = { "clang_format" },
+	cmake = { "cmake_format" },
+	dart = { "dart_format" },
+	go = { "gofmt" },
+	lua = { "stylua" },
+	luau = { "stylua" },
+	tex = { "latexindent" },
+	meson = { "meson_format" },
+	python = { "black" },
+	sh = { "shfmt" },
+	kdl = { "kdlfmt" },
+	-- qml = { "qmlformat" },
+	rune = { "rune_fmt" },
+	rust = { "rustfmt" },
+	nix = { "nixfmt" },
+	toml = { "taplo" },
+	-- typst = { "lsp" }, -- Uncomment when ready
+}
+
+for _, ft in ipairs({
+	"javascript",
+	"html",
+	"css",
+	"typescript",
+	"json",
+	"markdown",
+	"svelte",
+}) do
+	M.formatters_by_ft[ft] = { "prettier" }
+end
+
+M.linters_by_ft = {
+	luau = { "selene" },
+}
+
+return M

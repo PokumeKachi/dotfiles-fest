@@ -1,0 +1,37 @@
+return {
+	"saghen/blink.cmp",
+	dependencies = { "L3MON4D3/LuaSnip", version = "v2.*" },
+	version = "1.*",
+	opts = {
+		keymap = {
+			preset = "default",
+			["<CR>"] = { "accept", "fallback" },
+			["<S-Tab>"] = { "select_prev", "fallback" },
+			["<Tab>"] = { "select_next", "fallback" },
+		},
+		cmdline = { enabled = true, sources = { "cmdline", "path" } },
+		appearance = { nerd_font_variant = "mono" },
+		completion = {
+			keyword = { range = "full" }, -- full or prefix
+			accept = { auto_brackets = { enabled = false } },
+			list = { selection = { preselect = false, auto_insert = false } },
+			menu = {
+				auto_show = true,
+				draw = {
+					columns = {
+						{ "label", "label_description", gap = 1 },
+						{ "kind_icon", "kind" },
+						{ "source_id" },
+					},
+				},
+			},
+			documentation = { auto_show = true, auto_show_delay_ms = 10 },
+			ghost_text = { enabled = true },
+		},
+		snippets = { preset = "luasnip" },
+		sources = {
+			default = { "lsp", "path", "snippets", "buffer" },
+		},
+		fuzzy = { implementation = "prefer_rust_with_warning" },
+	},
+}

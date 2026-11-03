@@ -1,0 +1,16 @@
+include "modules/animations.kdl"
+include "modules/input.kdl"
+include "modules/services.kdl"
+include "modules/windows.kdl"
+include "monitor.kdl"
+environment {
+    NIXOS_OZONE_WL "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    XDG_TERMINAL_EXEC "kitty"
+    EDITOR "nvim"
+}
+cursor {
+    xcursor-size 16
+}
+prefer-no-csd
+screenshot-path "~/media/images/screenshots/%Y-%m-%d_%H-%M-%S.png"

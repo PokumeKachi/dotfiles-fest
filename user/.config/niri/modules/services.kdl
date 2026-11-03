@@ -1,0 +1,4 @@
+spawn-at-startup "noctalia"
+spawn-at-startup "fcitx5"
+spawn-at-startup "ibus start"
+spawn-at-startup "xwayland-satellite"

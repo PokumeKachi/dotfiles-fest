@@ -1,0 +1,91 @@
+PLAYBACK := "mpv --ao=alsa --af=aresample=resampler=soxr --loop-playlist --shuffle"
+VISUAL_PLAYBACK := "mpv --no-video --ao=alsa --af=aresample=resampler=soxr --loop-playlist --shuffle"
+
+_default:
+    @just --choose
+
+music:
+    @choice="$(printf '%s\n' choose play chill update | fzf --reverse --header='Music')"; \
+    [ -z "$choice" ] && exit 0; \
+    case "$choice" in \
+        choose) just _choose-music ;; \
+        play) just _play-music ;; \
+        chill) just _chill-music ;; \
+        update) just _update-music ;; \
+    esac
+
+_choose-music:
+    @clear
+    @easyeffects & disown
+    @find "$HOME/media/music" -type f \
+        \( -iname '*.opus' -o -iname '*.mp3' -o -iname '*.flac' -o -iname '*.m4a' -o -iname '*.ogg' -o -iname '*.wav' \) \
+        | sort \
+        | fzf \
+            --multi \
+            --prompt="🎵 " \
+            --preview 'mediainfo {} 2>/dev/null | head -30' \
+        | {{VISUAL_PLAYBACK}} --playlist=-
+
+_play-music:
+	@clear
+	@easyeffects & disown
+	{{PLAYBACK}} ~/media/music
+
+_chill-music:
+	@clear
+	@easyeffects & disown
+	{{PLAYBACK}} https://www.youtube.com/watch?v=ZUIT_rQIR5M
+
+_update-music:
+    cd ~/media/music && \
+    for f in *.opus; do \
+        [ -f "$f" ] || continue; \
+        newname=$(printf '%s' "$f" | sed 's/[ ()]/-/g' | sed 's/--*/-/g'); \
+        mv -n -- "$f" "$newname"; \
+    done
+    yt-dlp \
+        -f bestaudio[ext=m4a]/bestaudio \
+        -x \
+        --audio-format opus \
+        --audio-quality 0 \
+        -o "$HOME/media/music/%(title)s-[%(id)s].%(ext)s" \
+        --embed-metadata \
+        --embed-thumbnail \
+        --postprocessor-args "ExtractAudio:-af loudnorm=I=-16:LRA=11:TP=-1.5" \
+        --yes-playlist \
+        --sleep-interval 5 \
+        --max-sleep-interval 15 \
+        --downloader aria2c \
+        --downloader-args aria2c:"-x 8 -s 8 -k 2M -j 4" \
+        --cookies-from-browser firefox \
+        --download-archive "$HOME/media/music-archive.txt" \
+        --no-post-overwrites \
+        "https://www.youtube.com/playlist?list=PLFen3AmxoGIhg_wPkrGE3h-v19pAIkgRW"
+
+cache-clear:
+	sudo rm -rf /home/kachi/.cache/*
+	sudo rm -rf /root/.cache/*
+	sudo rm -rf /var/cache/*
+	rm -rf /home/kachi/.local/share/Trash/*
+	sudo rm -rf /root/.local/share/Trash/*
+	sudo journalctl --vacuum-time=1d
+
+break-time:
+    @while true; do \
+        swaylock; \
+        sleep 1200; \
+    done
+
+chat:
+    sh -c 'read -p "Server IP: " server; \
+           read -p "Port: " port; \
+           read -p "Username: " name; \
+           while read -r line; do \
+               echo "[ $name ]: $line"; \
+           done | ncat $server $port'
+
+freeze pid="":
+    pid="{{pid}}"; [ -z "$pid" ] && read -p "PID to pause: " pid; kill -STOP "$pid" && read -p "paused. press enter to resume" && kill -CONT "$pid"
+
+nix-switch:
+    nix run ~/dotfiles/nix#switch
