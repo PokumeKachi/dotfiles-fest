@@ -25,7 +25,7 @@ local function picker_current()
 end
 
 local function is_grep(p)
-    return true
+	return true
 	-- local src = type(p.opts.source) == "string" and p.opts.source or ""
 	-- return src:find("grep") ~= nil
 end
@@ -138,9 +138,9 @@ return {
 		zen = { enabled = true },
 	},
 	keys = {
-		map({ "n", "i" }, "<leader>stc", with_picker(toggle_case), { desc = "Toggle Case" }),
-		map({ "n", "i" }, "<leader>stw", with_picker(toggle_word), { desc = "Toggle Whole Word" }),
-		map({ "n", "i" }, "<leader>str", with_picker(toggle_regex), { desc = "Toggle Regex" }),
+		map({ "n" }, "<leader>stc", with_picker(toggle_case), { desc = "Toggle Case" }),
+		map({ "n" }, "<leader>stw", with_picker(toggle_word), { desc = "Toggle Whole Word" }),
+		map({ "n" }, "<leader>str", with_picker(toggle_regex), { desc = "Toggle Regex" }),
 		map("n", "<leader><space>", function()
 			Snacks.picker.smart()
 		end, { desc = "Smart Find Files" }),
