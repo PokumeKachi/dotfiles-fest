@@ -1,34 +1,51 @@
 local map = require("utils.keymap").map
 
-local function next_same_indent()
-	local indent = vim.fn.indent(".")
-	local line = vim.fn.line(".")
-	local last = vim.fn.line("$")
+local function is_nonblank(line)
+	return vim.fn.getline(line):match("%S") ~= nil
+end
 
-	for i = line + 1, last do
-		if vim.fn.indent(i) == indent then
-			vim.cmd("normal! " .. i .. "G")
-			return
+local function find_line(start_line, direction, predicate)
+	local limit = direction == 1 and vim.fn.line("$") or 1
+
+	for line = start_line + direction, limit, direction do
+		if predicate(line) then
+			return line
 		end
 	end
 end
 
-local function prev_same_indent()
-	local indent = vim.fn.indent(".")
-	local line = vim.fn.line(".")
+local function same_indent_motion(direction)
+	return function()
+		local current_line = vim.fn.line(".")
+		local base_line = current_line
 
-	for i = line - 1, 1, -1 do
-		if vim.fn.indent(i) == indent then
-			vim.cmd("normal! " .. i .. "G")
-			return
+		-- Find a reference line if the current line is blank.
+		if not is_nonblank(base_line) then
+			base_line = find_line(base_line, direction, is_nonblank)
+
+			if not base_line then
+				return
+			end
+		end
+
+		local base_indent = vim.fn.indent(base_line)
+
+		-- Find the next nonblank line with matching indentation.
+		local target_line = find_line(base_line, direction, function(line)
+			return is_nonblank(line) and vim.fn.indent(line) == base_indent
+		end)
+
+		if target_line then
+			vim.cmd("normal! " .. target_line .. "G")
 		end
 	end
 end
 
-map({ "n", "c", "x", "t" }, "<leader>]", next_same_indent, {
+map({ "n", "c", "x", "t" }, "<leader>]", same_indent_motion(1), {
 	desc = "Next Same Indent",
 })
-map({ "n", "c", "x", "t" }, "<leader>[", prev_same_indent, {
+
+map({ "n", "c", "x", "t" }, "<leader>[", same_indent_motion(-1), {
 	desc = "Previous Same Indent",
 })
 
