@@ -1,0 +1,13 @@
+* {
+    font-family: "Noto Color Emoji", sans-serif;
+    font-size: 32px;
+}
+
+#entry {
+    padding: 8px;
+}
+
+#input {
+    font-size: 20px;
+    padding: 10px;
+}

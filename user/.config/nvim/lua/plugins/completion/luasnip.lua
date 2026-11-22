@@ -1,3 +1,5 @@
+local map = require("utils.keymap").lazy_map
+
 return {
 	"L3MON4D3/LuaSnip",
 	version = "v2.*",
@@ -12,44 +14,31 @@ return {
 		})
 	end,
 	keys = {
-		{
-			"<C-l>",
-			function()
-				local ls = require("luasnip")
-				if ls.jumpable(1) then
-					local dest = ls.jump_destination(1)
-					if dest and dest:get_jump_index() ~= 0 then
-						ls.jump(1)
-					end
+		map({ "i", "s" }, "<C-l>", function()
+			local ls = require("luasnip")
+			if ls.jumpable(1) then
+				local dest = ls.jump_destination(1)
+				if dest and dest:get_jump_index() ~= 0 then
+					ls.jump(1)
 				end
-			end,
-			mode = { "i", "s" },
-			silent = true,
-		},
-		{
-			"<C-h>",
-			function()
-				local ls = require("luasnip")
-				if ls.jumpable(-1) then
-					local dest = ls.jump_destination(-1)
-					if dest and dest:get_jump_index() ~= 0 then
-						ls.jump(-1)
-					end
+			end
+		end, { silent = true }),
+
+		map({ "i", "s" }, "<C-h>", function()
+			local ls = require("luasnip")
+			if ls.jumpable(-1) then
+				local dest = ls.jump_destination(-1)
+				if dest and dest:get_jump_index() ~= 0 then
+					ls.jump(-1)
 				end
-			end,
-			mode = { "i", "s" },
-			silent = true,
-		},
-		{
-			"<C-e>",
-			function()
-				local ls = require("luasnip")
-				if ls.choice_active() then
-					ls.change_choice(1)
-				end
-			end,
-			mode = { "i", "s" },
-			silent = true,
-		},
+			end
+		end, { silent = true }),
+
+		map({ "i", "s" }, "<C-e>", function()
+			local ls = require("luasnip")
+			if ls.choice_active() then
+				ls.change_choice(1)
+			end
+		end, { desc = "" }),
 	},
 }

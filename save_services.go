@@ -4,7 +4,7 @@ import "github.com/emad-elsaid/fest"
 
 func init() {
 	fest.Service(
-		"gnome-keyring-daemon",
+		"ni-maschine",
 		"shelly-notifications",
 		"syncthing",
 		"wireplumber",

@@ -262,8 +262,6 @@ func office() {
 		"zotero",
 		"readest",
 		"keepassxc",
-		"bitwarden-bin",
-		"ente-auth",
 	)
 }
 

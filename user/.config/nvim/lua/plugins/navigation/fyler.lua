@@ -1,9 +1,10 @@
+local map = require("utils.keymap").lazy_map
+
 return {
-	dir = vim.fn.stdpath("config") .. "/forks/fyler.nvim",
-	-- "A7Lavinraj/fyler.nvim",
+	"A7Lavinraj/fyler.nvim",
 	-- dependencies = { "nvim-mini/mini.icons" },
 	branch = "stable",
-	   lazy = false,
+	lazy = false,
 	opts = {
 		hooks = {},
 		integrations = {
@@ -129,5 +130,7 @@ return {
 			},
 		},
 	},
-	keys = { { ",", "<cmd>Fyler<cr>", desc = "file explorer" } },
+	keys = {
+		map({ "n" }, ",", "<cmd>Fyler<cr>", { desc = "file explorer" }),
+	},
 }
