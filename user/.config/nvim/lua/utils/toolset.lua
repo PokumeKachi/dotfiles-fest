@@ -29,6 +29,7 @@ M.treesitter_parsers = {
 	"typst",
 	"json",
 	"qml",
+    "dart",
 
 	"astro",
 	"tsx",
