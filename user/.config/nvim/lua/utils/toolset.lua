@@ -29,7 +29,7 @@ M.treesitter_parsers = {
 	"typst",
 	"json",
 	"qml",
-    "dart",
+	"dart",
 
 	"astro",
 	"tsx",
@@ -222,10 +222,7 @@ M.formatters = {
 		args = { "--column-width", "100", "-" },
 		stdin = true,
 	},
-	dart_format = {
-		command = "dart",
-		args = { "format", "--indent", "4", "$FILENAME" },
-	},
+	dart_format = {},
 	kdlfmt = {
 		command = "kdlfmt",
 		stdin = true,
