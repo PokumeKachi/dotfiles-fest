@@ -1,0 +1,55 @@
+# see https://github.com/sigoden/aichat/blob/main/config.example.yaml
+
+model: groq:openai/gpt-oss-120b
+# model: groq:qwen/qwen3.8-27b
+temperature: 1
+top_p: 1
+instructions: null               # Override the instructions for the agent, have no effect for dynamic instructions
+variables:                       # Custom default values for the agent variables
+  <key>: <value>
+
+stream: true
+save: true
+keybindings: vi
+editor: null
+wrap: auto
+wrap_code: false
+
+function_calling: true
+mapping_tools:
+  fs: 'fs_cat,fs_ls,fs_search,fs_mkdir,fs_rm,fs_write'
+use_tools: all
+
+repl_prelude: "temp:default"
+cmd_prelude: "temp:default"
+agent_prelude: "temp:default"
+
+save_session: null
+compress_threshold: 4000
+summarize_prompt: '...'
+summary_prompt: '...'
+
+rag_embedding_model: null                   # Specifies the embedding model to use
+rag_reranker_model: null                    # Specifies the rerank model to use
+rag_top_k: 4                                # Specifies the number of documents to retrieve
+rag_chunk_size: null                        # Specifies the chunk size
+rag_chunk_overlap: null                     # Specifies the chunk overlap
+# Defines the query structure using variables like __CONTEXT__ and __INPUT__ to tailor searches to specific needs
+rag_template: |
+# Define document loaders to control how RAG and `.file`/`--file` load files of specific formats.
+document_loaders:
+
+clients:
+- type: openai-compatible
+  name: groq
+  api_base: https://api.groq.com/openai/v1
+  models:
+    - name: openai/gpt-oss-120b
+      max_input_tokens: 131072
+      max_tokens: 512
+      supports_function_calling: true
+
+    - name: qwen/qwen3.8-27b
+      max_input_tokens: 131072
+      max_tokens: 512
+      supports_function_calling: true
