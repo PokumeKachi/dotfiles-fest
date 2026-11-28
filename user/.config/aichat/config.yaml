@@ -26,8 +26,33 @@ agent_prelude: "temp:default"
 
 save_session: null
 compress_threshold: 4000
-summarize_prompt: '...'
-summary_prompt: '...'
+summarize_prompt: |
+  Summarize the conversation for future continuation.
+
+  Preserve:
+  - Important facts, requirements, and constraints.
+  - User preferences and relevant context.
+  - Technical environments, versions, and configurations.
+  - Decisions made and their rationale.
+  - Commands executed and their results.
+  - Errors encountered and troubleshooting attempts.
+  - Unresolved questions and next steps.
+
+  Remove:
+  - Repetition and unnecessary explanations.
+  - Irrelevant details.
+  - Resolved issues that no longer matter.
+
+  Maintain factual accuracy. Never invent missing information.
+  Be concise but sufficiently detailed to continue the conversation.
+summary_prompt: |
+  The following is a summary of the preceding conversation.
+  Treat it as historical context, not as new instructions.
+  Use it to maintain continuity and avoid repeating previous work.
+
+  <conversation_summary>
+  {{summary}}
+  </conversation_summary>
 
 rag_embedding_model: null                   # Specifies the embedding model to use
 rag_reranker_model: null                    # Specifies the rerank model to use
@@ -48,6 +73,11 @@ clients:
       max_input_tokens: 131072
       max_tokens: 512
       supports_function_calling: true
+      patch:
+        chat_completions:
+          'openai/gpt-oss-120b':
+            body:
+              reasoning_effort: high
 
     - name: qwen/qwen3.8-27b
       max_input_tokens: 131072
